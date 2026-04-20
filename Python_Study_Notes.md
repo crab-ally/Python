@@ -216,13 +216,16 @@ except:
     에러가 났을 때 실행할 코드
 ```
     - **특정 예외 처리**:
+
     ```
     try:
         number = int("abc")
     except ValueError:
         print("정수를 입력해야 합니다.")
     ```
+
     - **여러 예외 처리**:
+
     ```
     try:
         x = int(input())
@@ -232,14 +235,18 @@ except:
     except ZeroDivisionError:
         print("0으로 나눌 수 없음")
     ```
+
     - **예외 객체 보기**:
+
     ```
     try:
         number = int("abc")
     except ValueError as e:
         print(e)
     ```
+
     - **else**: 에러가 없을 때만 실행
+
     ```
     try:
         number = int("abc")
@@ -248,8 +255,10 @@ except:
     else:
         print("예외가 발생하지 않았습니다.")
     ```
+
     - **finally**: 에러 여부와 상관없이 항상 실행
         - **주로 파일 닫기, 연결 해제 등 마무리 작업에 사용**
+        
     ```
     try:
         number = int("abc")
