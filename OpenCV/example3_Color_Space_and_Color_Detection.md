@@ -85,6 +85,8 @@ def main():
 - `fill_value`: 채울 값. (255 = 흰색, 0 = 검은색)
 - `dtype`: 데이터 타입. `np.uint8`는 0~255 범위의 8비트 부호 없는 정수
 
+---
+
 ```python
     # OpenCV 색상은 BGR 순서입니다.
     blue_bgr = (255, 0, 0)
@@ -183,6 +185,8 @@ HSV: 색상을 사람의 인식 방식으로 표현
 > H=0은 빨강이고, H=179도 빨강에 가깝습니다.
 > 따라서 H를 검출할 때는 두 구간을 모두 고려해야 합니다.
 
+---
+
 ```python
     # 4. 초록색 영역 검출
     # OpenCV HSV 범위:
@@ -205,6 +209,8 @@ HSV: 색상을 사람의 인식 방식으로 표현
 - `lower_bound`: HSV 하한값 `[H_min, S_min, V_min]`
 - `upper_bound`: HSV 상한값 `[H_max, S_max, V_max]`
 - 반환값: 마스크 이미지 (lower_bound ≤ src ≤ upper_bound 인 픽셀은 255(흰색), 아니면 0(검은색))
+
+---
 
 ```python
     green_result = cv2.bitwise_and(image, image, mask=green_mask)
@@ -230,6 +236,8 @@ for each pixel:
 - `src1`, `src2`: 입력 이미지 (HSV) 또는 원본 이미지
 - `mask`: 마스크 이미지 (0~255, 0이면 해당 픽셀은 연산에서 제외)
 - 반환값: 결과 이미지 (마스크가 0인 부분은 원본 이미지의 해당 픽셀 유지, 255인 부분은 AND 연산 수행)
+
+---
 
 ```python
     # 5. 파란색 영역 검출
@@ -282,6 +290,8 @@ for each pixel:
 - `src1`, `src2`: 입력 이미지 (HSV) 또는 원본 이미지
 - `mask`: 마스크 이미지 (0~255, 0이면 해당 픽셀은 연산에서 제외)
 - 반환값: 결과 이미지 (마스크가 0인 부분은 원본 이미지의 해당 픽셀 유지, 255인 부분은 OR 연산 수행)
+
+---
 
 ```python
     red_result = cv2.bitwise_and(image, image, mask=red_mask)
