@@ -105,6 +105,8 @@ def main():
 > image.shape  →  (높이, 너비, 채널)  
 > cv2.resize() →  (너비, 높이)
 
+---
+
 ```python
     # 5. 중앙 영역 자르기
     # OpenCV/NumPy 배열 인덱싱은 [y1:y2, x1:x2] 순서입니다.
