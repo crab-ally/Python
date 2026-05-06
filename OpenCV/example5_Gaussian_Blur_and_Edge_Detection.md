@@ -263,7 +263,21 @@ Blur 후 Canny:
     save_image(os.path.join(output_dir, "05_canny_150_250_less_sensitive.png"), edges_150_250)
 
     print("threshold 비교 결과 저장 완료")
+```
 
+| 함수 | 기능 |
+|---|---|
+| `cv2.Canny(image, threshold1, threshold2)` | 엣지 검출 |
+
+- image: 입력 이미지 (흑백)
+- threshold1: 약한 엣지 임계값 (이 값보다 낮은 픽셀은 무시)
+- threshold2: 강한 엣지 임계값 (이 값보다 높은 픽셀은 무조건 엣지로 채택)
+    - threshold1 < 픽셀 기울기 강도 < threshold2 → 인접한 확실한 엣지와 연결된 경우만 엣지
+- 반환값: 엣지가 검출된 위치가 255, 나머지가 0인 흑백 이미지
+
+---
+
+```python
     # 6. Blur 없이 Canny 적용해서 비교
     edges_without_blur = cv2.Canny(gray, 50, 150)
 
@@ -274,7 +288,7 @@ Blur 후 Canny:
     # 7. 컬러 원본 위에 에지 표시
     # edges는 흑백 이미지이므로 컬러 마스크처럼 활용합니다.
     edge_overlay = image.copy()
-    edge_overlay[edges_50_150 > 0] = (0, 0, 255)
+    edge_overlay[edges_50_150 > 0] = (0, 0, 255)    # 빨간색
 
     overlay_path = os.path.join(output_dir, "05_edge_overlay_red.png")
     save_image(overlay_path, edge_overlay)
@@ -285,4 +299,28 @@ Blur 후 Canny:
 
 if __name__ == "__main__":
     main()
+```
+
+---
+
+### 3. Canny 동작 원리
+
+Canny 알고리즘은 내부적으로 4단계로 동작합니다.
+
+```
+[1단계] Gaussian Blur (노이즈 제거)
+    └─ 보통 Canny 호출 전에 미리 적용
+
+[2단계] Gradient 계산 (픽셀값 변화율)
+    └─ 픽셀값이 급격히 변하는 곳 = 경계선 후보
+    └─ 각 픽셀마다 "변화 강도"와 "변화 방향" 계산
+
+[3단계] Non-Maximum Suppression (엣지 얇게 만들기)
+    └─ 변화 방향으로 가장 강한 픽셀만 남기고 나머지 제거
+    └─ 두꺼운 엣지 → 1픽셀 두께의 날카로운 엣지
+
+[4단계] Double Threshold + Hysteresis (이중 임계값 필터링)
+    └─ threshold2 이상 → 확실한 엣지 (Strong Edge)
+    └─ threshold1~2 사이 → 연결된 경우만 엣지 (Weak Edge)
+    └─ threshold1 미만 → 제거
 ```
