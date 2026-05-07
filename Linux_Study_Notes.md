@@ -75,9 +75,19 @@
 
 ### 내용 편집
 
-**`nano 파일이름`**
-- `Ctrl+O` → `Enter` — 저장
-- `Ctrl+X` — 종료
+| 명령어 | 설명 | 사용법 |
+|---|---|---|
+| `nano 파일이름` | 편집기 | `Ctrl+O` → `Enter` — 저장 / `Ctrl+X` — 종료 |
+| `echo "문자열" > 파일이름` | 파일 덮어쓰기 |  |
+| `echo "문자열" >> 파일이름` | 파일 끝에 덧붙이기 |  |
+
+```bash
+# 변수출력
+name="turtlebot"
+echo $name
+```
+
+---
 
 ## 환경 설정
 
@@ -147,7 +157,9 @@ find 경로 -name "*.py" | xargs grep "검색어"
 | `apt list --installed` | 설치된 패키지 목록 조회 |
 
 > [!WARNING]
-> `apt install` 전에 반드시 `apt update`를 먼저 실행하세요.
+> `apt install` 전에 반드시 `apt update`를 먼저 실행하세요.  
+
+> apt-get vs apt - apt-get은 전통적인 안정 버전. apt는 사용자 친화 버전.
 
 특정 패키지 설치 여부 확인:
 ```bash
