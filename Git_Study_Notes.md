@@ -78,6 +78,13 @@ git push origin main        # GitHub에 반영
 git push -u origin 브랜치명 # 원격 브랜치 생성
 ```
 
+### 원격 브랜치 가져오기 (로컬에 해당 브랜치가 없을 때)
+
+```bash
+git fetch           # 원격 정보 가져오기
+git switch 브랜치명
+```
+
 ### 삭제
 
 ```bash
