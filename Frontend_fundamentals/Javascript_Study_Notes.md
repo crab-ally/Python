@@ -26,6 +26,8 @@
 let a = 10;
 let b;
 b = "Hello";
+
+const c = 10;   // 값을 다시 대입할 수 없는 변수 선언
 ```
 
 > 자료형 : String, **Number(정수, 실수)**, Boolean ...  
@@ -41,6 +43,17 @@ b = "Hello";
 - 숫자로 시작 불가
 - 특수문자는 `_`, `$` 만 가능
 - 예약어(키워드) 사용불가
+
+### 1-5. 모달창(modal window)
+
+현재 작업을 멈추고 사용자 응답을 강제로 받는 창
+
+| 함수 | 기능 | 반환값 |
+| --- | --- | --- |
+| `alert(문자열)` | 경고창을 띄움 | undefined |
+| `confirm(문자열)` | 확인/취소 선택창을 띄움 | true/false |
+| `prompt(문자열)` | 텍스트 입력창을 띄움 | 입력값 (문자열) |
+
 
 ---
 
@@ -104,6 +117,8 @@ b = "Hello";
 | `<=` | 작거나 같다 |
 | `==` | 같다 |
 | `!=` | 같지 않다 |
+| `===` | 같다 (타입까지) |
+| `!==` | 같지 않다 (타입까지) |
 
 ### 3-1. 논리연산자
 
@@ -272,3 +287,115 @@ greet(); // Guest
 ```
 
 ---
+
+## 7. 객체
+
+```javascript
+/* 객체 선언 */
+let user = {
+  name: "John",  // 프로퍼티(property) - name: "John", age: 30, "likes birds": true
+  age: 30,       // 키: "name", "age", "likes birds"   값: "John", 30, true
+  "likes birds": true // 프로퍼티 이름에 공백이 있을 경우 따옴표로 묶어줘야 한다.
+};
+
+/* 단축 프로퍼티: 기존 변수 값을 가져와 넣는 문법 */
+const name = "John";
+const age = 30;
+
+const user = {
+  name,     // name: name 과 같음 -> name: "John"
+  age       // age: age 와 같음 -> age: 30
+};
+```
+
+> 프로퍼티 이름에 공백이 있을 경우 대괄호 표기법을 사용해야 한다.
+
+### 7-1. 객체 값 접근
+
+```javascript
+/* 점 표기법 */
+console.log(user.name); // John
+
+/* 대괄호 표기법 */
+console.log(user["age"]); // 30
+
+/* 변수를 이용한 접근: 대괄호 표기법만 가능 */
+let prop = "name";
+console.log(user[prop]); // John
+```
+
+### 7-2. 프로퍼티 추가 및 삭제
+
+```javascript
+// 프로퍼티 추가
+user.isAdmin = true;
+user["isAdmin"] = true;
+
+// 프로퍼티 삭제
+delete user.age;
+delete user["age"];
+```
+
+### 7-3. 프로퍼티 존재 여부 확인
+
+존재하지 않는 프로퍼티에 접근하려 해도 에러가 발생하지 않고 undefined를 반환
+
+```javascript
+"key" in object     // true/false 반환
+
+/* 프로퍼티 전체를 반복할 때 */
+for (let key in object) {
+    console.log(key);    // 프로퍼티 이름 출력
+    console.log(object[key]); // 프로퍼티 값 출력
+}
+```
+
+### 7-4. 객체 참조
+
+객체가 할당된 변수를 복사하면 동일한 객체에 대한 참조 값이 하나 더 만들어진다
+
+```javascript
+let user = { name: 'John' };
+
+let admin = user;
+
+admin.name = 'Pete'; // 'admin' 참조 값에 의해 변경됨
+
+alert(user.name); // 'Pete'가 출력됨. 'user' 참조 값을 이용해 변경사항을 확인함
+```
+
+### 7-5. 메서드와 this
+
+```javascript
+/* 메서드: 객체 프로퍼티에 할당된 함수 */
+user = {
+    name: "John",
+    age: 30,
+    sayHi: function() {
+        alert(this.name);   // this: 현재 메서드를 호출한 객체
+    }
+};
+
+/* 메서드 단축 문법 */
+user = {
+    name: "John",
+    age: 30,
+
+    sayHi() {
+        alert(this.name);
+    }
+};
+
+/* 메서드 할당 */
+user.sayHi = function() {
+  alert(this.name);
+};
+
+user.sayHi(); // John
+```
+
+> [!Warning]
+> 화살표 함수에서 this는 바깥쪽 스코프의 this 값을 그대로 가져옴 (고유한 의미 없음)
+
+---
+
