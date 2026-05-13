@@ -36,6 +36,10 @@ git push -u origin main     # 원격 저장소에 업로드
 
 ```bash
 git clone 원격저장소주소    # 빈 폴더에 원격 저장소 복제
+
+# pull = fetch + merge
+# 1. fetch  → 원격 최신 정보 가져오기
+# 2. merge  → 변경사항 병합
 git pull origin main    # 기존 폴더에 원격 가져오기
 ```
 
@@ -91,6 +95,14 @@ git switch 브랜치명
 git branch -d 브랜치명              # 로컬 삭제 (병합된 경우)
 git branch -D 브랜치명              # 로컬 강제 삭제
 git push origin --delete 브랜치명   # 원격 삭제
+```
+
+### 로컬에 삭제된 원격 브랜치 정보가 남아있는 경우
+
+```bash
+# fetch  → 원격 최신 정보 가져오기
+# --prune  → 없어진 원격 브랜치 정보 정리
+git fetch --prune
 ```
 
 ---

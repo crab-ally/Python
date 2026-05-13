@@ -20,22 +20,27 @@
 
 `std::cout << "출력 문자열" << 변수명 << std::endl;`
 
+| 함수 | 기능 | 비고 |
+|---|---|---|
 | std::cout | 화면에 출력 | 버퍼에 저장했다 출력할 수 있음 |
 | std::endl | 줄바꿈 및 버퍼 비우기(flush) | 즉시 출력 보장 |
 
-> `<iostream>` 헤더파일 필요
+> `<iostream>` 헤더파일 필요  
 > `std::` 생략 하려면 `using namespace std;` 사용
 
 ### 1-3. 키보드 입력 받기
 
+| 함수 | 기능 |
+|---|---|
 | `std::cin >> 변수명` | 공백 전까지만 읽어옴 |
 | `std::getline(std::cin, 변수명)` | 엔터 전까지 읽어옴 |
+| `std::cin.ignore()` | 버퍼에 남아있는 엔터를 제거 |
 
 ```cpp
 int age;
 std::string name;
 
-std::cin >> age;    // 엔터를 포함하지 않고 읽어옴. 버퍼에 엔터가 남아있음
+std::cin >> age;    // 버퍼에 엔터가 남아있음
 std::cin.ignore();  // 버퍼에 남아있는 엔터를 제거
 std::getline(std::cin,name);   // 버퍼에 엔터가 남아있다면 동작이 원활하지 않음
 ```
@@ -126,27 +131,7 @@ do {
 ```
 
 > 반환값이 없다면 반환타입으로 `void` 사용  
-> `main` 함수 보다 먼저 선언하거나 `main` 함수 보다 아래에 있다면 함수 헤더를 먼저 선언 해야 함
-
-### 4-1. 참조 전달
-
-```cpp
-void print(int& a) {
-  a = 10;
-  std::cout << a << std::endl;
-}
-
-int main() {
-  int b = 0;
-  print(b); // 10
-  std::cout << b << std::endl;  // 10
-  return 0;
-}
-```
-
-> `a`는 `b`와 같은 메모리를 가리키는 별명  
-> 함수 호출 시 변수 복사가 일어나지 않음  
-> `const`를 매개변수 앞에 붙여주면 함수 안에서 변수 값을 변경하지 못하게 할 수 있음
+> `main` 함수 보다 아래에 있다면 함수 헤더를 먼저 선언
 
 ---
 
@@ -231,4 +216,236 @@ int& r = a; // 참조 변수 r은 변수 a를 가리킴
 std::cout << r << std::endl; // a의 값을 출력
 ```
 
+```cpp
+void print(int& a) {
+  a = 10;
+  std::cout << a << std::endl;
+}
+
+int main() {
+  int b = 0;
+  print(b); // 10
+  std::cout << b << std::endl;  // 10
+  return 0;
+}
+```
+
+> `a`는 `b`와 같은 메모리를 가리키는 별명  
+> 함수 호출 시 변수 복사가 일어나지 않음  
+> `const`를 매개변수 앞에 붙여주면 함수 안에서 변수 값을 변경하지 못하게 할 수 있음
+
 ---
+
+## 7. 구조체와 클래스
+
+### 7-1. 구조체
+
+```cpp
+struct Point {   // 새로운 자료형 생성
+    int x;
+    int y;
+};
+
+int main() {
+    Point p;
+    p.x = 10;
+    p.y = 20;
+    std::cout << p.x << std::endl;
+    std::cout << p.y << std::endl;
+    return 0;
+}
+```
+
+> 구조체는 기본값이 `public`
+
+### 7-2. 클래스
+
+- 멤버 변수: 클래스 내부 변수
+- 멤버 함수: 클래스 내부 함수
+
+```cpp
+class 클래스이름 {
+public:
+    // 클래스 외부에서 접근 가능
+
+private:
+    // 클래스 외부에서 직접 접근 불가
+};
+```
+
+> 클래스는 기본값이 `private`  
+> **캡슐화**: 클래스 내부 데이터를 외부에서 마음대로 바꾸지 못하게 보호하고, 정해진 함수로만 접근하게 하는 설계 방식  
+
+```cpp
+class Robot {
+public:
+    /* 생성자: 객체가 만들어질 때 자동으로 호출되는 특별한 함수
+     * 클래스 이름과 같음, 반환형 없음
+     */
+    Robot() { 
+        name_ = "unknown";
+        battery_ = 100;
+        speed_ = 0.0;
+    }
+    
+    /* 생성자 오버로딩(overloading): 매개변수가 다르면 다른 함수로 인식
+     */
+    Robot(const std::string& name, int battery) {
+        name_ = name;
+        battery_ = battery;
+        speed_ = 0.0;
+    }
+
+    /* 생성자 초기화 리스트: 객체 생성과 동시에 초기화
+     */
+    Robot(const std::string& name, int battery, double speed)
+    : name_(name), battery_(battery), speed_(speed)
+    {
+    }
+
+    /* const 멤버 함수: 읽기 전용 함수
+     */
+    int get_battery() const {
+        return battery_;
+    }
+
+private:
+    std::string name_;
+    int battery_;
+    double speed_;
+};
+```
+
+#### 상속
+
+기존 클래스(부모 클래스)의 기능을 **새로운 클래스(자식 클래스)**가 물려받는 문법
+
+```cpp
+class Robot {
+public:
+    Robot(const std::string& name)
+        : name_(name),
+          battery_(100)
+    {
+    }
+
+    void print_basic_status() const {
+        std::cout << "Robot name: " << name_ << std::endl;
+        std::cout << "Battery: " << battery_ << "%" << std::endl;
+    }
+
+    void stop() const {
+        std::cout << name_ << " stopped." << std::endl;
+    }
+
+protected:
+    std::string name_;
+    int battery_;
+};
+
+class MobileRobot : public Robot {
+public:
+    MobileRobot(const std::string& name)
+        : Robot(name)   // 부모 생성자 호출
+    {
+    }
+
+    void move_forward() const {
+        std::cout << name_ << " moving forward." << std::endl;
+    }
+};
+
+int main() {
+    MobileRobot robot("turtlebot3");
+
+    robot.print_basic_status();
+    robot.move_forward();
+    robot.stop();
+
+    return 0;
+}
+```
+
+> 자식 객체 생성 시: 부모 객체 생성 → 자식 객체 생성  
+> 부모 클래스에 기본 생성자가 없으면 직접 호출 필요
+
+| 접근 제어자 | 클래스 내부 | 자식 클래스 | 외부 | 
+|---|---|---|---|
+| `public` | O | O | O |
+| `protected` | O | O | X |
+| `private` | O | X | X |
+
+| 상속 | 설명 |
+|---|---|
+| public 상속 | 부모의 public 기능을 자식에서도 public으로 유지하며 상속 |
+| protected 상속 | 부모의 public 기능을 자식에서 private으로 상속 |
+| private 상속 | 부모의 public 기능을 자식에서 protected으로 상속 |
+
+#### 오버라이딩(override)
+
+부모 클래스의 함수를 자식 클래스에서 다시 정의하는 것
+
+```cpp
+class Robot {
+public:
+    virtual void move() {
+        std::cout << "Robot moves." << std::endl;
+    }
+};
+
+class MobileRobot : public Robot {
+public:
+    void move() override {
+        std::cout << "Mobile robot drives." << std::endl;
+    }
+};
+```
+
+| 키워드 | 의미 |
+|---|---|
+| `virtual` | 이 함수는 자식 클래스에서 재정의될 수 있음 |
+| `override` | 부모 클래스의 virtual 함수를 정확히 재정의 |
+
+#### 다형성
+
+같은 함수 호출이라도 객체 종류에 따라 다르게 동작하는 것
+- 장점: 코드 통합, 확장과 유지보수 쉬움
+
+```cpp
+class Robot {
+public:
+    virtual void move() {
+        std::cout << "Robot moves." << std::endl;
+    }
+};
+
+class MobileRobot : public Robot {
+public:
+    void move() override {
+        std::cout << "Mobile robot drives." << std::endl;
+    }
+};
+
+class RobotArm : public Robot {
+public:
+    void move() override {
+        std::cout << "Robot arm rotates." << std::endl;
+    }
+};
+
+int main() {
+    MobileRobot mobile_robot;
+    RobotArm robot_arm;
+
+    std::vector<Robot*> robots;
+
+    robots.push_back(&mobile_robot);
+    robots.push_back(&robot_arm);
+
+    for (Robot* robot : robots) {
+        robot->move();
+    }
+
+    return 0;
+}
+```
