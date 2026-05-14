@@ -133,6 +133,65 @@ do {
 > 반환값이 없다면 반환타입으로 `void` 사용  
 > `main` 함수 보다 아래에 있다면 함수 헤더를 먼저 선언
 
+### 4-1. 콜백 함수
+
+어떤 조건이나 이벤트가 발생했을 때 다른 코드가 대신 호출하는 함수
+
+```cpp
+void print_robot_status() {
+    std::cout << "Robot status: OK" << std::endl;
+}
+void print_battery(int battery) {
+    std::cout << "Battery: " << battery << "%" << std::endl;
+}
+
+/* 방법1: 함수 포인터 방식 */
+void run_callback(void (*callback)()) {
+    std::cout << "Before callback" << std::endl;
+    callback();   // 전달받은 함수 실행
+    std::cout << "After callback" << std::endl;
+}
+/* 방법2: std::function 방식 */
+void run_callback(std::function<void()> callback) {
+    std::cout << "Before callback" << std::endl;
+    callback();
+    std::cout << "After callback" << std::endl;
+}
+/* 매개변수가 있는 함수 */
+void run_battery_callback(std::function<void(int)> callback) {
+    int battery = 85;
+    callback(battery);
+}
+
+int main() {
+    run_callback(print_robot_status);   // 함수 자체 전달 (함수 주소 전달)
+    run_battery_callback(print_battery);
+
+    return 0;
+}
+```
+
+### 4-2. 람다 함수
+
+
+---
+
+## 5. 배열
+
+```cpp
+#include <vector>
+
+int battery[4] = {1,2,3,4}; // 크기 고정
+std::vector<int> batterys = {1,2,3,4}; // 크기 가변
+
+batterys.size(); // 벡터 크기 반환
+batterys.push_back(5); // 벡터에 값 추가
+
+for (std::size_t i : batterys) { // 벡터 순회
+  std::cout << i << std::endl;
+}
+```
+
 ---
 
 ## 5. 배열
@@ -204,6 +263,92 @@ std::cin >> n;
 int* arr = new int[n];  // 메모리 주소 반환
 delete[] arr;  // 메모리 해제
 ```
+
+#### 스마트 포인터
+
+메모리 해제를 자동으로 도와주는 포인터 객체
+- `#include <memory>` 사용
+
+1. `std::unique_ptr`: 하나의 객체를 딱 하나의 포인터만 소유할 수 있게 하는 스마트 포인터
+
+```cpp
+class Robot {
+public:
+    void hello() {
+        std::cout << "Hello Robot" << std::endl;
+    }
+};
+
+int main() {
+    // 1. unique_ptr 생성 (자동 메모리 관리)
+    std::unique_ptr<Robot> p = std::make_unique<Robot>();
+    p->hello();
+
+    // 2. 복사 시도 - 복사 불가 (❌ 컴파일 에러)
+    std::unique_ptr<Robot> q = p;
+
+    // 3. move로 소유권 이동 - p는 nullptr이 됨
+    std::unique_ptr<Robot> q = std::move(p);
+
+    if (!p) {
+        std::cout << "p is empty (ownership moved)" << std::endl;
+    }
+
+    q->hello();
+
+    // main 끝나면 q가 자동 delete
+}
+```
+
+2. `std::shared_ptr`: 여러 포인터가 하나의 객체를 “공동 소유”할 수 있는 스마트 포인터
+
+```cpp
+class Robot {
+public:
+    Robot() {
+        std::cout << "Robot created" << std::endl;
+    }
+
+    ~Robot() {
+        std::cout << "Robot destroyed" << std::endl;
+    }
+
+    void hello() {
+        std::cout << "Hello Robot" << std::endl;
+    }
+};
+
+int main() {
+
+    // 1. shared_ptr 생성
+    std::shared_ptr<Robot> p1 = std::make_shared<Robot>();
+
+    /* use_count()
+     *: 스마트 포인터가 가리키는 객체를 소유한 스마트 포인터의 개수를 저장하는
+     *  참조 카운터를 반환
+     */
+    std::cout << "p1 count: " << p1.use_count() << std::endl; // 1
+
+    // 새로운 지역 범위
+    {
+        // 2. 복사 → 공동 소유
+        std::shared_ptr<Robot> p2 = p1;
+
+        p2->hello();
+
+        std::cout << "p1 count: " << p1.use_count() << std::endl; // 2
+        std::cout << "p2 count: " << p2.use_count() << std::endl; // 2
+
+    } // p2 소멸
+
+    std::cout << "After p2 destroyed" << std::endl;
+    std::cout << "p1 count: " << p1.use_count() << std::endl; // 1
+
+} // 마지막 p1 소멸 → 자동 delete
+```
+
+> 함수의 매개변수 - 값 전달: 복사되므로 참조 카운트 증가  
+> 함수의 매개변수 - 참조 전달: 복사x, 참조 카운트 유지
 
 ### 6-2. 참조
 
@@ -443,7 +588,7 @@ int main() {
     robots.push_back(&robot_arm);
 
     for (Robot* robot : robots) {
-        robot->move();
+        robot->move();  // 객체에 따라 다르게 동작
     }
 
     return 0;
